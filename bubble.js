@@ -53,10 +53,6 @@ setInterval(() => {
   }
 }, 160);
 
-// extra spawn on background click
-container.addEventListener('click', () => {
-  createBubble();
-});
 
 // starting bubbles
 for (let i = 0; i < 9; i++) {
