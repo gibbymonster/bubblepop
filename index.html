@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>satisfy.click • bubble pop</title>
+  <style>
+    body {
+      margin: 0;
+      height: 100vh;
+      background: linear-gradient(135deg, #1a1a2e, #16213e);
+      overflow: hidden;
+      font-family: system-ui, sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      color: #fff;
+    }
+    h1 {
+      margin: 0 0 20px 0;
+      font-size: 2.5rem;
+      opacity: 0.9;
+    }
+    .container {
+      position: relative;
+      width: 100%;
+      height: 80vh;
+      cursor: pointer;
+    }
+    .bubble {
+      position: absolute;
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.9), rgba(100,200,255,0.6));
+      box-shadow: 0 0 30px rgba(100,200,255,0.8), inset 0 0 20px rgba(255,255,255,0.9);
+      user-select: none;
+      pointer-events: none;
+    }
+    .pop {
+      animation: popAnim 0.35s forwards;
+    }
+    @keyframes popAnim {
+      0% { transform: scale(1); opacity: 1; }
+      100% { transform: scale(0.2); opacity: 0; }
+    }
+    .score {
+      position: absolute;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 1.8rem;
+      font-weight: bold;
+      text-shadow: 0 0 10px #64c8ff;
+    }
+  </style>
+</head>
+<body>
+  <h1>click the bubbles</h1>
+  <div class="score">pops: <span id="count">0</span></div>
+  <div class="container" id="container"></div>
+
+  <script>
+    const container = document.getElementById('container');
+    const countEl = document.getElementById('count');
+    let count = 0;
+    const popSound = new Audio('pop.mp3');
+
+    function createBubble() {
+      const bubble = document.createElement('div');
+      const size = Math.random() * 90 + 50;
+      
+      bubble.classList.add('bubble');
+      bubble.style.width = `${size}px`;
+      bubble.style.height = `${size}px`;
+      bubble.style.left = `${Math.random() * 100}%`;
+      bubble.style.top = `${Math.random() * 100}%`;
+      
+      container.appendChild(bubble);
+
+      let y = parseFloat(bubble.style.top);
+      const floatUp = setInterval(() => {
+        y -= 0.25;
+        bubble.style.top = `${y}%`;
+        if (y < -15) {
+          clearInterval(floatUp);
+          bubble.remove();
+        }
+      }, 30);
+
+      bubble.addEventListener('click', (e) => {
+        e.stopImmediatePropagation();
+        bubble.classList.add('pop');
+
+        popSound.currentTime = 0;
+        popSound.play().catch(() => {});
+
+        count++;
+        countEl.textContent = count;
+
+        setTimeout(() => bubble.remove(), 350);
+      });
+    }
+
+    setInterval(() => {
+      if (document.querySelectorAll('.bubble').length < 14) createBubble();
+    }, 160);
+
+    container.addEventListener('click', () => createBubble());
+
+    for (let i = 0; i < 9; i++) {
+      setTimeout(createBubble, i * 100);
+    }
+  </script>
+</body>
+</html>
