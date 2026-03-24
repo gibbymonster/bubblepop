@@ -1,4 +1,4 @@
-// bubble.js - main satisfying bubble simulation
+// bubble.js - fixed version
 
 const container = document.getElementById('container');
 const countEl = document.getElementById('count');
@@ -14,6 +14,7 @@ function createBubble() {
   bubble.style.height = `${size}px`;
   bubble.style.left = `${Math.random() * 100}%`;
   bubble.style.top = `${Math.random() * 100}%`;
+  bubble.style.pointerEvents = 'auto';   // this was missing
 
   container.appendChild(bubble);
 
@@ -35,7 +36,6 @@ function createBubble() {
 
     bubble.classList.add('pop');
 
-    // crisp pop sound
     popSound.currentTime = 0;
     popSound.play().catch(() => {});
 
@@ -46,19 +46,19 @@ function createBubble() {
   });
 }
 
-// auto spawn bubbles
+// auto spawn
 setInterval(() => {
   if (document.querySelectorAll('.bubble').length < 14) {
     createBubble();
   }
 }, 160);
 
-// click anywhere to spawn extra bubble
+// extra spawn on background click
 container.addEventListener('click', () => {
   createBubble();
 });
 
-// spawn some starting bubbles
+// starting bubbles
 for (let i = 0; i < 9; i++) {
   setTimeout(createBubble, i * 100);
 }
